@@ -43,3 +43,10 @@ document.addEventListener("DOMContentLoaded", function () {
         userInfoDiv.innerHTML = `<p class="text-red-500">Aucun utilisateur trouvé.</p>`;
     }
 });
+
+document.addEventListener("keydown", function (event) {
+    if (event.ctrlKey && event.key === "l") {
+        event.preventDefault(); // Empêche le comportement par défaut du navigateur
+        window.location.href = "/login"; // Remplace "/login" par l'URL réelle de ta page de connexion
+    }
+});

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
     <head>
         <meta charset="UTF-8"/>
         <base href="http://cubesbusinessdirectoryfront/">
@@ -53,6 +53,8 @@
                 <script src="<?=URL?>public/js/<?=$js_file?>"></script>
             <?php endforeach; ?>
         <?php endif; ?>
+
+        <script src="<?=URL?>public/js/header.js"></script>
 
     </body>
 </html>

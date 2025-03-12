@@ -24,11 +24,15 @@ require_once "services/view_data/views_data.php";
 BaseController::$error_view_data  = new ViewData("error", "Ooops!", "...", "views/pages/error.view.php");
 
 $home           = new ViewData("accueil", "Accueil", "...", "views/pages/home.view.php", page_js_files: ["home.js", "constants.js"]);
+$login          = new ViewData("login", "Connexion", "...", "views/pages/login.view.php", page_js_files: ["login.js", "constants.js"]);
 $mainController = new MainController(
     home_view_data : $home,
     views_data     : new ViewsData(
         new ViewData("user",  "Profil utilisateur",  "...", "views/pages/user.view.php", page_js_files: ["user.js", "constants.js"]),
-        $home
+        new ViewData("service",  "Gestion des services",  "...", "views/pages/service.view.php", page_js_files: ["service.js", "constants.js"]),
+        new ViewData("site",  "Gestion des sites",  "...", "views/pages/site.view.php", page_js_files: ["site.js", "constants.js"]),
+        $home,
+        $login
     ),
 );
 

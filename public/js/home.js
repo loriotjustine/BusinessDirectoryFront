@@ -126,3 +126,10 @@ document.addEventListener("DOMContentLoaded", function () {
 const see_user = async (id) => {
     window.location.href = `/user/${id}`;
 };
+
+document.addEventListener("keydown", function (event) {
+    if (event.ctrlKey && event.key === "l") {
+        event.preventDefault(); // Empêche le comportement par défaut du navigateur
+        window.location.href = "/login"; // Remplace "/login" par l'URL réelle de ta page de connexion
+    }
+});
