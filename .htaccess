@@ -1,0 +1,9 @@
+RewriteEngine On
+
+# Si la requête correspond à /user/{id}, redirige vers user.view.php avec le paramètre id
+RewriteRule ^user/([0-9]+)$ index.php?page=user&id=$1 [L,QSA]
+
+# Si la requête n'est pas pour un fichier ou répertoire existant, redirige vers index.php
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ index.php?page=$1 [QSA,L]
