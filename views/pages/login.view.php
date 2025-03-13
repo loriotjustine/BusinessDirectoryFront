@@ -15,4 +15,5 @@
 
         <button type="submit" class="bg-blue-500 text-white p-2 rounded-md w-full">Se connecter</button>
     </form>
+    <p id="error-message" class="text-red-500 mt-2 hidden"></p>
 </div>

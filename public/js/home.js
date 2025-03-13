@@ -1,4 +1,15 @@
 document.addEventListener("DOMContentLoaded", function () {
+    // Récupérer le rôle de l'utilisateur depuis localStorage
+    const userRole = localStorage.getItem('userRole');
+    
+    // Si le rôle est null, on considère que l'utilisateur n'est pas authentifié et on le redirige
+    if (!userRole) {
+        alert("Utilisateur non authentifié !");
+        window.location.href = '/login'; // Rediriger vers la page de login si l'utilisateur n'est pas authentifié
+    }
+    
+    console.log('Rôle de l\'utilisateur:', userRole);
+
     const tableBody = document.getElementById("families_table");
     const searchInput = document.getElementById("search");
     const serviceFilter = document.getElementById("serviceFilter");
@@ -120,6 +131,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         displayUsers(filteredUsers); // Afficher les utilisateurs filtrés
     }
+
 });
 
 // Fonction pour voir l'utilisateur (comme dans ton code original)

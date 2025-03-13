@@ -1,20 +1,20 @@
 document.addEventListener("DOMContentLoaded", function () {
     const logoutButton = document.getElementById('logoutButton');
-    const userStatusDiv = document.getElementById('user-status');
-    const userRole = sessionStorage.getItem('userRole'); // Ou récupère ce rôle depuis ailleurs si nécessaire
+    const adminContainer = document.getElementById('admin-container');
+    const userRole = sessionStorage.getItem('userRole');
+
+    console.log("🔍 User Role from sessionStorage:", userRole);
 
     // Vérifier si l'utilisateur est admin
-    if (userRole === 'admin') {
-        // Afficher le message dans le header
-        userStatusDiv.classList.remove('hidden');
-        logoutButton.classList.remove('hidden'); // Afficher le bouton de déconnexion
+    if (userRole === '0') {
+        adminContainer.classList.remove('hidden'); // Affiche le bloc admin
     } else {
-        userStatusDiv.classList.add('hidden'); // Cacher le message si l'utilisateur n'est pas admin
+        adminContainer.classList.add('hidden'); // Cache le bloc pour les non-admins
     }
 
-    // Écoute le clic sur le bouton de déconnexion
+    // Gestion du bouton de déconnexion
     logoutButton.addEventListener('click', function () {
-        sessionStorage.removeItem('userRole'); // Supprimer les données de la session
-        window.location.href = '/'; // Rediriger vers la page d'accueil
+        sessionStorage.removeItem('userRole'); // Supprime le rôle de la session
+        window.location.href = '/'; // Redirige vers l'accueil
     });
 });
