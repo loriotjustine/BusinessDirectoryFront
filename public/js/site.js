@@ -1,6 +1,7 @@
 document.addEventListener("DOMContentLoaded", function () {
     const userRole = sessionStorage.getItem('userRole');
 
+    // Vérification du rôle utilisateur
     if (userRole !== "0") { 
         alert("Accès refusé. Vous n'êtes pas administrateur.");
         window.location.href = "/accueil"; 
@@ -11,13 +12,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
     let siteToDelete = null; // Déclaration correcte en global
 
+    // Fonction pour charger les sites
     function loadSites() {
         fetch("https://localhost:7250/Sites")
             .then(response => response.json())
             .then(sites => {
                 console.log("Réponse de l'API Sites :", sites);
                 const tableBody = document.getElementById("sites_table");
-                tableBody.innerHTML = "";
+                tableBody.innerHTML = ""; // Clear the table before adding new rows
 
                 sites.forEach(site => {
                     const row = document.createElement("tr");
@@ -40,6 +42,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     tableBody.appendChild(row);
                 });
 
+                // Ajouter les événements aux boutons "Editer"
                 document.querySelectorAll(".edit-btn").forEach(button => {
                     button.addEventListener("click", function () {
                         const siteId = this.getAttribute("data-id");
@@ -47,20 +50,23 @@ document.addEventListener("DOMContentLoaded", function () {
                     });
                 });
 
+                // Ajouter les événements aux boutons "Supprimer"
                 document.querySelectorAll(".delete-btn").forEach(button => {
                     button.addEventListener("click", function () {
                         siteToDelete = this.getAttribute("data-id");
-                        openPopup();
+                        openPopup(); // Ouvrir la fenêtre de confirmation
                     });
                 });
             })
             .catch(error => console.error("Erreur lors du chargement des sites:", error));
     }
 
+    // Fonction pour ouvrir le popup de confirmation
     function openPopup() {
         document.getElementById("deletePopup").classList.remove("hidden");
     }
 
+    // Fonction pour fermer le popup
     function closePopup() {
         siteToDelete = null;
         document.getElementById("deletePopup").classList.add("hidden");
@@ -68,22 +74,29 @@ document.addEventListener("DOMContentLoaded", function () {
 
     async function deleteSite() {
         if (!siteToDelete) return;
-
+    
         try {
-            const userResponse = await fetch(`https://localhost:7250/Users?siteId=${siteToDelete}`);
+            // Affiche le site ID pour débogage
+            console.log("ID du site à supprimer:", siteToDelete);
+    
+            // Vérifie les utilisateurs associés au site via l'API
+            const userResponse = await fetch(`https://localhost:7250/Users/BySite/${siteToDelete}`);
             const users = await userResponse.json();
-
+            console.log("Utilisateurs associés au site:", users);
+    
+            // Si des utilisateurs sont associés, empêche la suppression
             if (users.length > 0) {
                 alert("Impossible de supprimer ce site : des utilisateurs y sont affectés.");
                 closePopup();
                 return;
             }
-
+    
+            // Supprimer le site
             const response = await fetch(`https://localhost:7250/Sites/${siteToDelete}`, { method: "DELETE" });
-
+    
             if (response.ok) {
                 alert("Site supprimé avec succès.");
-                loadSites();
+                loadSites(); // Recharger les sites après la suppression
             } else {
                 alert("Erreur lors de la suppression.");
             }
@@ -91,20 +104,24 @@ document.addEventListener("DOMContentLoaded", function () {
             console.error("Erreur:", error);
             alert("Une erreur est survenue.");
         }
-
+    
         closePopup();
     }
 
+    // Ajouter les événements aux boutons de confirmation dans le popup
     document.getElementById("confirmDeleteBtn").addEventListener("click", deleteSite);
     document.getElementById("cancelDeleteBtn").addEventListener("click", closePopup);
+
+    // Charger les sites au démarrage
     loadSites();
 });
 
+// Fonction pour rediriger vers la page d'accueil
 function goHome() {
     window.location.href = "/accueil"; // Redirige vers la page d'accueil
 }
 
-
+// Fonction pour rediriger vers la page d'ajout de site
 function goAddSite() {
     window.location.href = "/site/add";
 }

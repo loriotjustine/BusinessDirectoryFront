@@ -12,7 +12,7 @@ $userRole = isset($_SESSION['userRole']) ? $_SESSION['userRole'] : null;
     <a href="/site" class="bg-gray-500 text-white px-4 py-2 rounded-md shadow-md hover:bg-gray-600">
         Gérer les sites
     </a>
-    <a href="/admin/manage-services" class="bg-gray-500 text-white px-4 py-2 rounded-md shadow-md hover:bg-gray-600">
+    <a href="/service" class="bg-gray-500 text-white px-4 py-2 rounded-md shadow-md hover:bg-gray-600">
         Gérer les services
     </a>
 </div>    
