@@ -66,7 +66,7 @@ document.addEventListener("DOMContentLoaded", function () {
           alert("Une erreur est survenue lors de la mise à jour du site.");
         });
     });
-  });
+});
   
 function goSite() {
     window.location.href = "/site";
