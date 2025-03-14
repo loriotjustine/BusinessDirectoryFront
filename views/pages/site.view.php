@@ -19,12 +19,10 @@
             </button>
         </div>
 
-        <!-- Filtre des sites -->
+        <!-- Filtre des sites (Barre de recherche) -->
         <div class="mb-4">
-            <label for="siteFilter" class="text-slate-800">Filtrer par site :</label>
-            <select id="siteFilter" class="mt-2 p-2 rounded border w-full">
-                <option value="">Tous les sites</option> <!-- Option pour tous les sites -->
-            </select>
+            <label for="siteSearch" class="text-slate-800">Rechercher par nom de site :</label>
+            <input id="siteSearch" type="text" class="mt-2 p-2 rounded border w-full" placeholder="Rechercher un site avec son nom ..." />
         </div>
 
         <!-- Table des sites -->
