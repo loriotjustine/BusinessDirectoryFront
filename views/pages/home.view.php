@@ -53,4 +53,13 @@ $userRole = isset($_SESSION['userRole']) ? $_SESSION['userRole'] : null;
     </table>
 </div>
 
-<!-- Fin de la section pour les utilisateurs -->
+<!-- Popup de confirmation -->
+<div id="deletePopup" class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center hidden">
+    <div class="bg-white p-6 rounded-lg shadow-lg text-center">
+        <p class="text-lg font-semibold text-black">Souhaitez-vous réellement supprimer cet employé ?</p>
+        <div class="mt-4 flex justify-center space-x-4">
+            <button id="confirmDeleteBtn" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-800">Oui</button>
+            <button id="cancelDeleteBtn" class="bg-gray-400 text-black px-4 py-2 rounded hover:bg-gray-600">Non</button>
+        </div>
+    </div>
+</div>
