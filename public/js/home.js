@@ -134,6 +134,16 @@ document.addEventListener("DOMContentLoaded", function () {
 
 });
 
+document.addEventListener("DOMContentLoaded", function () {
+    const adminActions = document.getElementById('admin-actions');
+    const userRole = sessionStorage.getItem('userRole');
+
+    if (userRole === '0') {
+        adminActions.classList.remove('hidden'); // Affiche les boutons pour admin
+    }
+});
+
+
 // Fonction pour voir l'utilisateur (comme dans ton code original)
 const see_user = async (id) => {
     window.location.href = `/user/${id}`;

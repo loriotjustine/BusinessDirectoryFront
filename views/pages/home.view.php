@@ -5,7 +5,19 @@ $userRole = isset($_SESSION['userRole']) ? $_SESSION['userRole'] : null;
 ?>
 
 <div class="bg-gray-200 rounded-xl p-8 mx-4 mt-4 mb-8 shadow-lg text-black">
-    <!-- Recherche et filtres généraux -->
+<div id="admin-actions" class="hidden flex space-x-4 mb-4">
+    <a href="/admin/create-user" class="bg-gray-500 text-white px-4 py-2 rounded-md shadow-md hover:bg-gray-600">
+        Créer un employé
+    </a>
+    <a href="/site" class="bg-gray-500 text-white px-4 py-2 rounded-md shadow-md hover:bg-gray-600">
+        Gérer les sites
+    </a>
+    <a href="/admin/manage-services" class="bg-gray-500 text-white px-4 py-2 rounded-md shadow-md hover:bg-gray-600">
+        Gérer les services
+    </a>
+</div>    
+
+<!-- Recherche et filtres généraux -->
     <div class="mb-4">
         <label for="search" class="text-slate-800">Rechercher un utilisateur par nom :</label>
         <input type="text" id="search" class="mt-2 p-2 rounded border w-full" placeholder="Tapez un nom de famille..." />

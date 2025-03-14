@@ -50,3 +50,7 @@ document.addEventListener("keydown", function (event) {
         window.location.href = "/login"; // Remplace "/login" par l'URL réelle de ta page de connexion
     }
 });
+
+function goHome() {
+    window.location.href = "/accueil"; // Redirige vers la page d'accueil
+}
