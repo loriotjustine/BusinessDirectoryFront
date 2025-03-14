@@ -35,6 +35,7 @@ $mainController = new MainController(
         new ViewData("site/add",  "Ajout d'un site",  "...", "views/pages/add_site.view.php", page_js_files: ["add_site.js", "constants.js"]),
         new ViewData("service/add",  "Ajout d'un service",  "...", "views/pages/add_service.view.php", page_js_files: ["add_service.js", "constants.js"]),
         new ViewData("service/edit",  "Modification d'un service",  "...", "views/pages/edit_service.view.php", page_js_files: ["edit_service.js", "constants.js"]),
+        new ViewData("user/add",  "Ajout d'un utilisateur",  "...", "views/pages/add_user.view.php", page_js_files: ["add_user.js", "constants.js"]),
         $home,
         $login
     ),

@@ -6,7 +6,7 @@ $userRole = isset($_SESSION['userRole']) ? $_SESSION['userRole'] : null;
 
 <div class="bg-gray-200 rounded-xl p-8 mx-4 mt-4 mb-8 shadow-lg text-black">
 <div id="admin-actions" class="hidden flex space-x-4 mb-4">
-    <a href="/admin/create-user" class="bg-gray-500 text-white px-4 py-2 rounded-md shadow-md hover:bg-gray-600">
+    <a href="/user/add" class="bg-gray-500 text-white px-4 py-2 rounded-md shadow-md hover:bg-gray-600">
         Créer un employé
     </a>
     <a href="/site" class="bg-gray-500 text-white px-4 py-2 rounded-md shadow-md hover:bg-gray-600">
