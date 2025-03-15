@@ -1,6 +1,4 @@
 <?php
-// Supposons que tu as une variable de session qui contient le rôle de l'utilisateur
-// Par exemple, $_SESSION['userRole'] = 0 pour admin, $_SESSION['userRole'] = 1 pour utilisateur
 $userRole = isset($_SESSION['userRole']) ? $_SESSION['userRole'] : null;
 ?>
 
@@ -17,7 +15,6 @@ $userRole = isset($_SESSION['userRole']) ? $_SESSION['userRole'] : null;
     </a>
 </div>    
 
-<!-- Recherche et filtres généraux -->
     <div class="mb-4">
         <label for="search" class="text-slate-800">Rechercher un utilisateur par nom :</label>
         <input type="text" id="search" class="mt-2 p-2 rounded border w-full" placeholder="Tapez un nom de famille..." />
@@ -26,18 +23,17 @@ $userRole = isset($_SESSION['userRole']) ? $_SESSION['userRole'] : null;
     <div class="mb-4">
         <label for="serviceFilter" class="text-slate-800">Filtrer par service :</label>
         <select id="serviceFilter" class="mt-2 p-2 rounded border w-full">
-            <option value="">Tous les services</option> <!-- Option pour tous les services -->
+            <option value="">Tous les services</option>
         </select>
     </div>
 
     <div class="mb-4">
         <label for="siteFilter" class="text-slate-800">Filtrer par site :</label>
         <select id="siteFilter" class="mt-2 p-2 rounded border w-full">
-            <option value="">Tous les sites</option> <!-- Option pour tous les sites -->
+            <option value="">Tous les sites</option>
         </select>
     </div>
 
-    <!-- Tableau des utilisateurs -->
     <table class="w-full divide-y divide-gray-200">
         <thead class="bg-gray-50 text-slate-800">
             <tr class="divide-x divide-gray-200">
@@ -51,6 +47,7 @@ $userRole = isset($_SESSION['userRole']) ? $_SESSION['userRole'] : null;
         <tbody class="divide-y divide-gray-200 bg-white text-slate-800" id="families_table">
         </tbody>
     </table>
+    <div id="pagination" class="flex justify-center space-x-4 mt-4"></div>
 </div>
 
 <!-- Popup de confirmation -->

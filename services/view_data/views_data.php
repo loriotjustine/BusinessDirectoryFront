@@ -5,6 +5,7 @@ class ViewsData implements IteratorAggregate {
 
         private array $content;
 
+        // CONSTRUCTEUR
         public function __construct(?ViewData ...$content) {
             $this->content = [];
             foreach ($content as $value) { if ($value) $this->content[$value->page] = $value; }

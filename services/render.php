@@ -2,8 +2,8 @@
 abstract class Render {
 
         /**
-         * Renders a view based on a given view data.
-         * @param ViewData $view_data Informations about the view to render.
+         * Renvoie la vue correspondante
+         * @param ViewData $view_data Les infos de la page à retourner
          */
         protected static function render(ViewData $view_data): void {
             

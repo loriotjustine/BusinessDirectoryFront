@@ -1,87 +1,70 @@
-// Fonction pour valider l'email avec une expression régulière
-function validateEmail(email) {
-    const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
-    return emailRegex.test(email);
-}
-
 document.addEventListener("DOMContentLoaded", async function () {
-    const userId = new URLSearchParams(window.location.search).get('id'); // Récupérer l'ID de l'URL
+    const userId = new URLSearchParams(window.location.search).get('id');
     if (!userId) {
         alert("Utilisateur non trouvé");
-        window.location.href = "/home"; // Rediriger vers la page d'accueil si pas d'ID
+        window.location.href = "/home";
         return;
     }
 
     try {
-        // Récupérer les données de l'utilisateur via l'API
         const userResponse = await fetch(`https://localhost:7250/Users/${userId}`);
         if (!userResponse.ok) throw new Error("Erreur lors du chargement des données utilisateur");
         const userData = await userResponse.json();
 
-        // Log des données utilisateur
-        console.log("Données utilisateur récupérées:", userData);
-
-        // Pré-remplir le formulaire avec les données de l'utilisateur
         document.getElementById("employeeName").textContent = `${userData.firstName} ${userData.lastName}`;
         document.getElementById("userLastname").value = userData.lastName;
         document.getElementById("userFirstname").value = userData.firstName;
         document.getElementById("userLandline").value = userData.landline;
         document.getElementById("userMobile").value = userData.mobile;
         document.getElementById("userEmail").value = userData.email;
-        document.getElementById("userPassword").value = ''; // On ne pré-remplie pas le mot de passe pour des raisons de sécurité
+        document.getElementById("userPassword").value = '';
 
-        // Charger les rôles
         await loadRoles(userData.role.id);
 
-        // Charger les sites
         await loadSites(userData.site.id);
 
-        // Charger les services
         await loadServices(userData.service.id);
 
-        // Soumission du formulaire de modification
+        /**
+         * Gestion du formulaire de modification d'user
+         */
         const form = document.getElementById("editUserForm");
         form.addEventListener("submit", async function (event) {
             event.preventDefault();
 
             const email = document.getElementById("userEmail").value;
             
-            // Validation de l'email avant de soumettre
             if (!validateEmail(email)) {
                 alert("Veuillez entrer un email valide.");
-                return; // Empêche l'envoi du formulaire si l'email est invalide
+                return;
             }
 
+            // Récupérationd des données modifiées
             const updatedUser = {
                 LastName: document.getElementById("userLastname").value,
                 FirstName: document.getElementById("userFirstname").value,
                 LandlinePhone: document.getElementById("userLandline").value,
                 MobilePhone: document.getElementById("userMobile").value,
                 Email: email,
-                // Si le mot de passe est vide, garder l'ancien mot de passe
                 Password: document.getElementById("userPassword").value || userData.password,
                 Role: parseInt(document.getElementById("userRole").value),
                 SiteId: parseInt(document.getElementById("userSite").value),
                 ServiceId: parseInt(document.getElementById("userService").value),
             };
 
-            // Log des données envoyées
-            console.log("Données envoyées à l'API:", updatedUser);
-
             try {
+                // Envoi des modifications
                 const response = await fetch(`https://localhost:7250/Users/${userId}`, {
-                    method: "PUT", // Mise à jour de l'utilisateur
+                    method: "PUT",
                     headers: {
                         "Content-Type": "application/json",
                     },
                     body: JSON.stringify(updatedUser),
                 });
 
-                // Vérifier la réponse de l'API
                 if (response.ok) {
-                    console.log("Réponse OK:", await response.json());
                     alert("Employé modifié avec succès.");
-                    window.location.href = "/home"; // Rediriger vers la page d'accueil
+                    window.location.href = "/home";
                 } else {
                     const errorData = await response.json();
                     console.log("Erreur de la mise à jour:", errorData);
@@ -98,11 +81,12 @@ document.addEventListener("DOMContentLoaded", async function () {
     }
 });
 
-// Charger les sites
+/**
+ * Chargement des sites
+ */
 async function loadSites(selectedSiteId) {
     const response = await fetch("https://localhost:7250/Sites");
     const sites = await response.json();
-    console.log("Sites chargés:", sites); // Log des sites
     const siteSelect = document.getElementById("userSite");
     sites.forEach(site => {
         const option = document.createElement("option");
@@ -113,11 +97,12 @@ async function loadSites(selectedSiteId) {
     });
 }
 
-// Charger les services
+/**
+ * Chargement des services
+ */
 async function loadServices(selectedServiceId) {
     const response = await fetch("https://localhost:7250/Services");
     const services = await response.json();
-    console.log("Services chargés:", services); // Log des services
     const serviceSelect = document.getElementById("userService");
     services.forEach(service => {
         const option = document.createElement("option");
@@ -128,11 +113,12 @@ async function loadServices(selectedServiceId) {
     });
 }
 
-// Charger les rôles
+/**
+ * Chargement des rôles
+ */
 async function loadRoles(selectedRoleId) {
     const response = await fetch("https://localhost:7250/Users/roles");
     const roles = await response.json();
-    console.log("Rôles chargés:", roles); // Log des rôles
     const roleSelect = document.getElementById("userRole");
     roles.forEach(role => {
         const option = document.createElement("option");
@@ -143,7 +129,19 @@ async function loadRoles(selectedRoleId) {
     });
 }
 
-// Fonction pour rediriger vers la page d'accueil
+/**
+ * Validation du format de l'email
+ * @param email l'email
+ * @returns la validité de l'email
+ */
+function validateEmail(email) {
+    const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+    return emailRegex.test(email);
+}
+
+/**
+ * Redirection vers /accueil
+ */
 function goHome() {
-    window.location.href = "/accueil"; // Redirige vers la page d'accueil
+    window.location.href = "/accueil";
 }

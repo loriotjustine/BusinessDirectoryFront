@@ -1,13 +1,9 @@
 document.addEventListener("DOMContentLoaded", function () {
-    // Extraire l'ID utilisateur depuis l'URL sous la forme "/user/{id}"
     const pathParts = window.location.pathname.split('/');
-    const userId = pathParts[pathParts.length - 1]; // Le dernier segment de l'URL
-    console.log(`ID utilisateur récupéré: ${userId}`);
-
+    const userId = pathParts[pathParts.length - 1];
     const userInfoDiv = document.getElementById("user-info");
 
     if (userId && !isNaN(userId)) {
-        // Récupérer les informations de l'utilisateur via l'API
         fetch(`${API_URL}/users/${userId}`)
             .then(response => {
                 if (!response.ok) {
@@ -16,9 +12,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 return response.json();
             })
             .then(userData => {
-                console.log(userData); // Traite les données ici
-
-                // Vérifier si on a bien les données nécessaires
                 if (userData) {
                     userInfoDiv.innerHTML = `
                         <p><strong>Nom :</strong> ${userData.lastName || 'Non disponible'}</p>
@@ -30,7 +23,6 @@ document.addEventListener("DOMContentLoaded", function () {
                         <p><strong>Site :</strong> ${userData.site.siteName || 'Non disponible'}</p>
                     `;
                 } else {
-                    // Si aucune donnée n'est trouvée
                     userInfoDiv.innerHTML = `<p class="text-red-500">Aucun utilisateur trouvé.</p>`;
                 }
             })
@@ -39,18 +31,23 @@ document.addEventListener("DOMContentLoaded", function () {
                 userInfoDiv.innerHTML = `<p class="text-red-500">Impossible de récupérer les informations de l'utilisateur.</p>`;
             });
     } else {
-        // Si l'ID utilisateur est invalide
         userInfoDiv.innerHTML = `<p class="text-red-500">Aucun utilisateur trouvé.</p>`;
     }
 });
 
+/**
+ * Redirection sur la page /login au clic sur ctrl + l
+ */
 document.addEventListener("keydown", function (event) {
     if (event.ctrlKey && event.key === "l") {
-        event.preventDefault(); // Empêche le comportement par défaut du navigateur
-        window.location.href = "/login"; // Remplace "/login" par l'URL réelle de ta page de connexion
+        event.preventDefault();
+        window.location.href = "/login";
     }
 });
 
+/**
+ * Redirection vers /accueil
+ */
 function goHome() {
-    window.location.href = "/accueil"; // Redirige vers la page d'accueil
+    window.location.href = "/accueil";
 }

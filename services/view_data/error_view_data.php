@@ -3,6 +3,7 @@ class ErrorViewData extends ViewData {
     
     public readonly string $error_message;
 
+    // CONSTRUCTEUR
     public function __construct(
         string $page,
         string $title,
@@ -30,10 +31,9 @@ class ErrorViewData extends ViewData {
 
 
     /**
-     * Outputs an `ErrorViewData` based on a `ViewData`'s content.
-     * @param  ViewData $from The base view data.
-     * @param  string   $error_message The error message to display.
-     * @return ErrorViewData An error view data based on the given view data.
+     * Créé une ErrorViewData depuis une ViewData
+     * @param  string   $error_message le message d'erreur
+     * @return ErrorViewData la vue d'erreur correspondante
      */
     public static function fromViewData(
         ViewData $from,

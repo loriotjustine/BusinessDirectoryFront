@@ -9,6 +9,7 @@ class ViewData {
     public readonly array  $page_css_files;
     public readonly array  $page_js_files;
 
+    // CONSTRUCTEUR
     public function __construct(
         string $page,
         string $title,

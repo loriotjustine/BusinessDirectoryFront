@@ -1,24 +1,23 @@
-document.addEventListener("DOMContentLoaded", function () {
-    // Récupérer le rôle de l'utilisateur depuis sessionStorage
-    const userRole = sessionStorage.getItem('userRole');
-    
-    // Si le rôle est null, on considère que l'utilisateur n'est pas authentifié et on le redirige
-    //if (!userRole) {
-    //    alert("Utilisateur non authentifié !");
-    //    window.location.href = '/login'; // Rediriger vers la page de login si l'utilisateur n'est pas authentifié
-    //}
-    
-    console.log('Rôle de l\'utilisateur:', userRole);
-
+document.addEventListener("DOMContentLoaded", function () {   
     const tableBody = document.getElementById("families_table");
     const searchInput = document.getElementById("search");
     const serviceFilter = document.getElementById("serviceFilter");
     const siteFilter = document.getElementById("siteFilter");
-    let usersData = []; // Variable pour stocker toutes les données des utilisateurs
-    let allServices = []; // Variable pour stocker tous les services
-    let allSites = []; // Variable pour stocker tous les sites
+    const adminActions = document.getElementById('admin-actions');
+    const userRole = sessionStorage.getItem('userRole');
+    const usersPerPage = 5;
+    let usersData = [];
+    let allServices = [];
+    let allSites = [];
+    let currentPage = 1;
 
-    // Récupérer les utilisateurs depuis l'API
+    if (userRole === '0') {
+        adminActions.classList.remove('hidden');
+    }
+
+    /**
+     * Récupération des users
+     */
     fetch(API_URL + '/users')
         .then(response => {
             if (!response.ok) {
@@ -27,19 +26,18 @@ document.addEventListener("DOMContentLoaded", function () {
             return response.json();
         })
         .then(data => {
-            console.log(data);
-            usersData = data; // Sauvegarder les données des utilisateurs
+            usersData = data;
 
-            // Afficher les utilisateurs dans le tableau
-            displayUsers(usersData);
+            displayUsers(usersData, currentPage);
 
-            // Ajouter un écouteur d'événement pour filtrer les utilisateurs par nom
             searchInput.addEventListener("input", function () {
-                filterUsers(searchInput.value, serviceFilter.value, siteFilter.value);
+                filterUsers(searchInput.value, serviceFilter.value, siteFilter.value, currentPage);
             });
 
-            // Récupérer les services depuis l'API
-            fetch(API_URL + '/services') // Supposons que l'API expose un endpoint pour récupérer les services
+            /**
+             * Récupération des services
+             */
+            fetch(API_URL + '/services')
                 .then(response => response.json())
                 .then(services => {
                     allServices = services;
@@ -49,8 +47,10 @@ document.addEventListener("DOMContentLoaded", function () {
                     console.error("Erreur lors de la récupération des services :", error);
                 });
 
-            // Récupérer les sites depuis l'API
-            fetch(API_URL + '/sites') // Supposons que l'API expose un endpoint pour récupérer les sites
+            /**
+             * Récupération des sites
+             */
+            fetch(API_URL + '/sites')
                 .then(response => response.json())
                 .then(sites => {
                     allSites = sites;
@@ -60,14 +60,12 @@ document.addEventListener("DOMContentLoaded", function () {
                     console.error("Erreur lors de la récupération des sites :", error);
                 });
 
-            // Ajouter un écouteur d'événement pour filtrer les utilisateurs par service
             serviceFilter.addEventListener("change", function () {
-                filterUsers(searchInput.value, serviceFilter.value, siteFilter.value);
+                filterUsers(searchInput.value, serviceFilter.value, siteFilter.value, currentPage);
             });
 
-            // Ajouter un écouteur d'événement pour filtrer les utilisateurs par site
             siteFilter.addEventListener("change", function () {
-                filterUsers(searchInput.value, serviceFilter.value, siteFilter.value);
+                filterUsers(searchInput.value, serviceFilter.value, siteFilter.value, currentPage);
             });
         })
         .catch(error => {
@@ -75,12 +73,18 @@ document.addEventListener("DOMContentLoaded", function () {
             tableBody.innerHTML = `<tr><td colspan="5" class="px-4 py-2 text-center text-red-500">Impossible de charger les données</td></tr>`;
         });
 
-    // Fonction pour afficher les utilisateurs dans le tableau
-    function displayUsers(users) {
-        tableBody.innerHTML = ""; // Réinitialiser le tableau
-        const userRole = sessionStorage.getItem('userRole');
+    /**
+     * Affichage des users par page
+     * @param {A} users les users
+     * @param {*} page la page actuelle
+     */
+    function displayUsers(users, page) {
+        tableBody.innerHTML = "";
+        const startIndex = (page - 1) * usersPerPage;
+        const endIndex = startIndex + usersPerPage;
+        const pageUsers = users.slice(startIndex, endIndex);
 
-        users.forEach(user => {
+        pageUsers.forEach(user => {
             const row = document.createElement("tr");
             row.classList.add("divide-x", "divide-gray-200");
 
@@ -110,114 +114,164 @@ document.addEventListener("DOMContentLoaded", function () {
             tableBody.appendChild(row);
         });
 
-        // Ajouter les événements aux boutons "Editer"
         document.querySelectorAll(".edit-btn").forEach(button => {
             button.addEventListener("click", function () {
                 const userId = this.getAttribute("data-id");
-                window.location.href = `/user/edit?id=${userId}`; // Redirection vers la page de modification
+                window.location.href = `/user/edit?id=${userId}`;
             });
         });
 
-        // Ajouter les événements aux boutons "Supprimer"
         document.querySelectorAll(".delete-btn").forEach(button => {
             button.addEventListener("click", function () {
-                userToDelete = this.getAttribute("data-id");
-                openPopup(); // Ouvrir la fenêtre de confirmation
+                const userToDelete = this.getAttribute("data-id");
+                openPopup(userToDelete);
             });
         });
+
+        updatePagination(users.length, page);
     }
 
-    // Fonction pour ouvrir le popup de confirmation
-    function openPopup() {
-        document.getElementById("deletePopup").classList.remove("hidden");
-    }
+    /**
+     * Mise à jour de la pagination
+     * @param {*} totalUsers le nombre total d'user
+     * @param {*} currentPage la page actuelle
+     */
+    function updatePagination(totalUsers, currentPage) {
+        const totalPages = Math.ceil(totalUsers / usersPerPage);
+        const pagination = document.getElementById('pagination');
+        pagination.innerHTML = '';
 
-    // Fonction pour fermer le popup
-    function closePopup() {
-        userToDelete = null;
-        document.getElementById("deletePopup").classList.add("hidden");
-    }
-
-    async function deleteUser() {
-        if (!userToDelete) return;
-    
-        try {
-            // Affiche le user ID pour débogage
-            console.log("ID de l'employé à supprimer:", userToDelete);
-    
-            // Supprimer l'employé
-            const response = await fetch(`https://localhost:7250/Users/${userToDelete}`, { method: "DELETE" });
-    
-            if (response.ok) {
-                alert("Employé supprimé avec succès.");
-                location.reload(); // Recharger les users après la suppression
-            } else {
-                alert("Erreur lors de la suppression.");
+        // Création des boutons de pagination
+        for (let i = 1; i <= totalPages; i++) {
+            const pageButton = document.createElement('button');
+            pageButton.textContent = i;
+            pageButton.classList.add('pagination-button');
+            if (i === currentPage) {
+                pageButton.classList.add('active');
             }
-        } catch (error) {
-            console.error("Erreur:", error);
-            alert("Une erreur est survenue.");
+
+            pageButton.addEventListener('click', function () {
+                currentPage = i;
+                filterUsers(searchInput.value, serviceFilter.value, siteFilter.value, currentPage);
+            });
+
+            pagination.appendChild(pageButton);
         }
-    
-        closePopup();
     }
 
-    // Ajouter les événements aux boutons de confirmation dans le popup
-    document.getElementById("confirmDeleteBtn").addEventListener("click", deleteUser);
-    document.getElementById("cancelDeleteBtn").addEventListener("click", closePopup);
-
-    // Fonction pour peupler la liste déroulante des services
-    function populateServiceFilter(services) {
-        services.forEach(service => {
-            const option = document.createElement("option");
-            option.value = service.id;
-            option.textContent = service.serviceName;
-            serviceFilter.appendChild(option);
-        });
-    }
-
-    // Fonction pour peupler la liste déroulante des sites
-    function populateSiteFilter(sites) {
-        sites.forEach(site => {
-            const option = document.createElement("option");
-            option.value = site.id;
-            option.textContent = site.siteName;
-            siteFilter.appendChild(option);
-        });
-    }
-
-    // Fonction pour filtrer les utilisateurs en fonction du nom, du service et du site
-    function filterUsers(query, selectedService, selectedSite) {
+    /**
+     * Filtre des users
+     * @param {*} query le critère de filtration
+     * @param {*} selectedService le service choisi
+     * @param {*} selectedSite le site choisi
+     * @param {*} page la page choisie
+     */
+    function filterUsers(query, selectedService, selectedSite, page) {
         const filteredUsers = usersData.filter(user => {
             const matchesName = user.lastName.toLowerCase().startsWith(query.toLowerCase());
-            const matchesService = !selectedService || user.service.id === parseInt(selectedService); // Vérifie si le service correspond
-            const matchesSite = !selectedSite || user.site.id === parseInt(selectedSite); // Vérifie si le site correspond
+            const matchesService = !selectedService || user.service.id === parseInt(selectedService);
+            const matchesSite = !selectedSite || user.site.id === parseInt(selectedSite);
             return matchesName && matchesService && matchesSite;
         });
 
-        displayUsers(filteredUsers); // Afficher les utilisateurs filtrés
-    }
-
-});
-
-document.addEventListener("DOMContentLoaded", function () {
-    const adminActions = document.getElementById('admin-actions');
-    const userRole = sessionStorage.getItem('userRole');
-
-    if (userRole === '0') {
-        adminActions.classList.remove('hidden'); // Affiche les boutons pour admin
+        displayUsers(filteredUsers, page);
     }
 });
 
+/**
+ * Redirection sur la page /login au clic sur ctrl + l
+ */
+document.addEventListener("keydown", function (event) {
+    if (event.ctrlKey && event.key === "l") {
+        event.preventDefault();
+        window.location.href = "/login";
+    }
+});
 
-// Fonction pour voir l'utilisateur (comme dans ton code original)
+/**
+ * Ouverture de la pop-up de suppression
+ * @param {*} userId l'id de l'user
+ */
+function openPopup(userId) {
+    const popup = document.getElementById('deletePopup');
+    const confirmButton = document.getElementById('confirmDeleteBtn');
+    const cancelButton = document.getElementById('cancelDeleteBtn');
+
+    popup.classList.remove('hidden');
+
+    confirmButton.onclick = function() {
+        deleteUser(userId);
+        closePopup();
+    };
+
+    cancelButton.onclick = function() {
+        closePopup();
+    };
+}
+
+/**
+ * Fermeture de la pop-up
+ */
+function closePopup() {
+    const popup = document.getElementById('deletePopup');
+    popup.classList.add('hidden');
+}
+
+/**
+ * Suppression d'un user
+ * @param {*} userId l'id de l'user à supprimer
+ */
+function deleteUser(userId) {
+    fetch(API_URL + '/users/' + userId, {
+        method: 'DELETE'
+    })
+    .then(response => {
+        if (response.ok) {
+            alert("Utilisateur supprimé !");
+            location.reload();
+        } else {
+            alert("Erreur lors de la suppression de l'utilisateur");
+        }
+    })
+    .catch(error => {
+        console.error("Erreur de suppression :", error);
+    });
+}
+
+/**
+ * Ajouter les services dans la liste déroulante des filtres
+ * @param {*} services les services à afficher
+ */
+function populateServiceFilter(services) {
+    serviceFilter.innerHTML = '<option value="">Tous les services</option>';
+
+    services.forEach(service => {
+        const option = document.createElement("option");
+        option.value = service.id;
+        option.textContent = service.serviceName;
+        serviceFilter.appendChild(option);
+    });
+}
+
+/**
+ * Ajouter les sites dans la liste déroulante des filtres
+ * @param {*} sites les sites à afficher
+ */
+function populateSiteFilter(sites) {
+    siteFilter.innerHTML = '<option value="">Tous les sites</option>';
+
+    sites.forEach(site => {
+        const option = document.createElement("option");
+        option.value = site.id;
+        option.textContent = site.siteName;
+        siteFilter.appendChild(option);
+    });
+}
+
+/**
+ * Redirection vers la fiche de l'user
+ * @param {*} id l'id de l'user à afficher
+ */
 const see_user = async (id) => {
     window.location.href = `/user/${id}`;
 };
-
-document.addEventListener("keydown", function (event) {
-    if (event.ctrlKey && event.key === "l") {
-        event.preventDefault(); // Empêche le comportement par défaut du navigateur
-        window.location.href = "/login"; // Remplace "/login" par l'URL réelle de ta page de connexion
-    }
-});

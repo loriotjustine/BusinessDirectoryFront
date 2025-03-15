@@ -45,9 +45,7 @@
         <?php require_once "views/layouts/header.php";?>
 
         <main class="relativev sm:h-auto"> <?=$page_content;?> </main>
-        
-        <?php require_once "views/layouts/footer.php";?>
-        
+                
         <?php if(!empty($view_data->page_js_files)) : ?>
             <?php foreach($view_data->page_js_files as $js_file) : ?>
                 <script src="<?=URL?>public/js/<?=$js_file?>"></script>

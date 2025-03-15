@@ -3,18 +3,17 @@ document.addEventListener("DOMContentLoaded", function () {
     const adminContainer = document.getElementById('admin-container');
     const userRole = sessionStorage.getItem('userRole');
 
-    console.log("🔍 User Role from sessionStorage:", userRole);
-
-    // Vérifier si l'utilisateur est admin
     if (userRole === '0') {
-        adminContainer.classList.remove('hidden'); // Affiche le bloc admin
+        adminContainer.classList.remove('hidden');
     } else {
-        adminContainer.classList.add('hidden'); // Cache le bloc pour les non-admins
+        adminContainer.classList.add('hidden');
     }
 
-    // Gestion du bouton de déconnexion
+    /**
+     * Gestion du bouton deconnexion
+     */
     logoutButton.addEventListener('click', function () {
-        sessionStorage.removeItem('userRole'); // Supprime le rôle de la session
-        window.location.href = '/'; // Redirige vers l'accueil
+        sessionStorage.removeItem('userRole');
+        window.location.href = '/';
     });
 });

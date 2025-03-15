@@ -6,17 +6,24 @@ document.addEventListener("DOMContentLoaded", async function () {
 
 document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("createUserForm").addEventListener("submit", async function (event) {
-        event.preventDefault(); // Empêche le rechargement de la page
+        event.preventDefault();
         await createUser();
     });
 });
 
-// Fonction de validation du mot de passe
+/**
+ * Validation du mot de passe
+ * @param password le mot de passe
+ * @returns la validité du mot de passe
+ */
 function isValidPassword(password) {
     const passwordRegex = /^(?=.*[0-9])(?=.*[A-Z])(?=.*[a-z])(?=.*[.+*?!:;,^@/$(){}|]).{8,15}$/;
     return passwordRegex.test(password);
 }
 
+/**
+ * Création d'un user
+ */
 async function createUser() {
     const userPassword = document.getElementById("userPassword").value;
 
@@ -36,8 +43,6 @@ async function createUser() {
         Role: parseInt(document.getElementById("userRole").value),
         Password: userPassword
     };
-
-    console.log("Données envoyées:", userData); // Vérification avant envoi
 
     try {
         const response = await fetch("https://localhost:7250/Users", {
@@ -60,20 +65,17 @@ async function createUser() {
     }
 }
 
-
-
-
-
+/**
+ * Chargement des sites
+ */
 async function loadSites() {
     try {
         const response = await fetch("https://localhost:7250/Sites");
         if (!response.ok) throw new Error("Erreur lors du chargement des sites");
 
         const sites = await response.json();
-        console.log("Sites reçus:", sites);  // 🔍 Vérifie la structure
-
         const selectSite = document.getElementById("userSite");
-        selectSite.innerHTML = '<option value="">Sélectionner un site</option>'; // Réinitialisation
+        selectSite.innerHTML = '<option value="">Sélectionner un site</option>';
 
         sites.forEach(site => {
             let option = document.createElement("option");
@@ -86,14 +88,15 @@ async function loadSites() {
     }
 }
 
-// Charger les services depuis l'API
+/**
+ * Chargement des services
+ */
 async function loadServices() {
     try {
         const response = await fetch("https://localhost:7250/Services");
         if (!response.ok) throw new Error("Erreur lors du chargement des services");
 
         const services = await response.json();
-        console.log("services reçus:", services);  // 🔍 Vérifie la structure
         const selectService = document.getElementById("userService");
 
         services.forEach(service => {
@@ -107,6 +110,9 @@ async function loadServices() {
     }
 }
 
+/**
+ * Chargement des rôles
+ */
 async function loadRoles() {
     try {
         const response = await fetch("https://localhost:7250/users/roles");
@@ -126,7 +132,9 @@ async function loadRoles() {
     }
 }
 
-// Fonction pour rediriger vers la page accueil
+/**
+ * Redirection sur la page /accueil
+ */
 function goHome() {
     window.location.href = "/accueil";
 }

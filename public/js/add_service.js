@@ -6,11 +6,12 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
-// Fonction pour créer un service via l'API
+/**
+ * Création d'un service
+ */
 async function createService() {
     const serviceName = document.getElementById("serviceName").value;
 
-    // Validation des données
     if (!serviceName) {
         alert("Veuillez remplir tous les champs avec des valeurs valides !");
         return;
@@ -19,8 +20,6 @@ async function createService() {
     const serviceData = {
         serviceName: serviceName,
     };
-
-    console.log("Données envoyées à l'API: ", serviceData);
 
     try {
         const response = await fetch("https://localhost:7250/Services", {
@@ -36,14 +35,15 @@ async function createService() {
         }
 
         alert("Service ajouté avec succès !");
-        window.location.href = "/service";  // Rediriger vers la page des services après l'ajout
+        window.location.href = "/service";
     } catch (error) {
-        console.error("Erreur:", error);
         alert("Une erreur est survenue lors de l'ajout du service.");
     }
 }
 
-// Fonction pour rediriger vers la page service
+/**
+ * Redirection vers la page /service
+ */
 function goService() {
     window.location.href = "/service";
 }
